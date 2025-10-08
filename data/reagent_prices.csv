@@ -1,0 +1,31 @@
+reagent,cas_number,price_usd_per_g,supplier,category,notes,source,data_year
+Zinc nitrate hexahydrate,10196-18-6,0.166,Sigma-Aldrich,metal_salt,Very common MOF precursor,Alkali Scientific distributor 500g=$83.10,2024
+Copper(II) nitrate trihydrate,10031-43-3,0.28,Glentham Life Sciences,metal_salt,Common for HKUST-1 type MOFs,Direct 100g=$27.60,2024
+Zirconium(IV) chloride,10026-11-6,1.35,Apolloscientific,metal_salt,Expensive but makes stable UiO-type MOFs,Direct 100g=$135,2024
+Zirconium(IV) chloride (budget),10026-11-6,0.50,ProChem,metal_salt,Lower-cost alternative,Direct 100g=$50,2024
+Cobalt(II) nitrate hexahydrate,10026-22-9,0.30,Sigma-Aldrich,metal_salt,Common transition metal,Estimated from comparable salts,2024
+Nickel(II) nitrate hexahydrate,13478-00-7,0.35,Sigma-Aldrich,metal_salt,Common transition metal,Estimated from comparable salts,2024
+Magnesium nitrate hexahydrate,13446-18-9,0.08,Sigma-Aldrich,metal_salt,Cheap alkaline earth metal,Estimated from comparable salts,2024
+Iron(III) nitrate nonahydrate,7782-61-8,0.20,Sigma-Aldrich,metal_salt,Inexpensive 3d metal,Estimated from comparable salts,2024
+Chromium(III) nitrate nonahydrate,7789-02-8,0.40,Sigma-Aldrich,metal_salt,Moderate cost,Estimated from comparable salts,2024
+Manganese(II) nitrate tetrahydrate,20694-39-7,0.28,Sigma-Aldrich,metal_salt,Common 3d metal,Estimated from comparable salts,2024
+Cadmium nitrate tetrahydrate,10022-68-1,0.45,Sigma-Aldrich,metal_salt,Moderate cost toxic metal,Estimated from comparable salts,2024
+Terephthalic acid,100-21-0,0.033,Research grade,linker,BDC - most common MOF linker,MOF synthesis study 659.2g=$21.8,2024
+Trimesic acid,554-95-0,0.84,AK Scientific,linker,BTC - for HKUST-1 and related,Direct 25g=$21,2021
+2-Aminoterephthalic acid,10312-55-7,8.00,Sigma-Aldrich,linker,Functionalized BDC expensive,Estimated high-purity functionalized,2024
+Biphenyl-4 4-dicarboxylic acid,787-70-2,4.00,TCI,linker,BPDC - extended linker,Estimated from extended linkers,2024
+1 4-Naphthalenedicarboxylic acid,605-70-9,3.50,TCI,linker,NDC - aromatic extended,Estimated from extended linkers,2024
+Fumaric acid,110-17-8,0.30,Sigma-Aldrich,linker,Simple short linker,Estimated commodity organic,2024
+Succinic acid,110-15-6,0.15,Sigma-Aldrich,linker,Very cheap short linker,Estimated commodity organic,2024
+4 4-Bipyridine,553-26-4,2.80,Sigma-Aldrich,linker,Nitrogen donor linker,Estimated N-donor ligand,2024
+Imidazole,288-32-4,1.20,Sigma-Aldrich,linker,Small N-donor,Estimated small heterocycle,2024
+2-Methylimidazole,693-98-1,1.50,Sigma-Aldrich,linker,For ZIF synthesis,Estimated functionalized heterocycle,2024
+Isophthalic acid,121-91-5,0.80,TCI,linker,Meta-substituted benzene dicarboxylate,Estimated similar to TPA,2024
+1 3 5-Benzenetricarboxylic acid,554-95-0,0.84,AK Scientific,linker,BTC alternative name (same as trimesic acid),Direct 25g=$21,2021
+DMF,68-12-2,0.05,Fisher/Sigma,solvent,N N-Dimethylformamide - most common,Lab Alley range + density conversion,2024
+DEF,617-84-5,0.08,Sigma-Aldrich,solvent,N N-Diethylformamide,Estimated 1.6x DMF price,2024
+Ethanol,64-17-5,0.02,Fisher,solvent,Very cheap common solvent,Bulk commodity pricing,2024
+Methanol,67-56-1,0.02,Fisher,solvent,Very cheap common solvent,Bulk commodity pricing,2024
+Water,7732-18-5,0.001,Fisher,solvent,Essentially free,Distilled/deionized water,2024
+Acetone,67-64-1,0.03,Fisher,solvent,Cheap washing solvent,Bulk commodity pricing,2024
+Chloroform,67-66-3,0.10,Sigma-Aldrich,solvent,Moderate cost,Bulk commodity pricing,2024

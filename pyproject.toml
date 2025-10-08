@@ -1,0 +1,86 @@
+[project]
+name = "economic-active-learning-mof"
+version = "0.1.0"
+description = "Economic Active Learning for MOF Discovery - Budget-Constrained Materials Discovery"
+authors = [
+    {name = "Kartik Ganapathi"}
+]
+requires-python = ">=3.10"
+dependencies = [
+    # Core data science (minimal for cost estimator)
+    "numpy>=1.24.0",
+    "pandas>=2.0.0",
+    "scikit-learn>=1.3.0",
+    "scipy>=1.11.0",
+
+    # Utilities
+    "tqdm>=4.65.0",
+]
+
+[project.optional-dependencies]
+# ML/DL packages (needed for Economic AL)
+ml = [
+    "torch>=2.0.0",
+    "torchvision>=0.15.0",
+    "torchaudio>=2.0.0",
+]
+
+# Visualization packages (needed for dashboard)
+viz = [
+    "matplotlib>=3.7.0",
+    "seaborn>=0.12.0",
+    "plotly>=5.14.0",
+    "streamlit>=1.28.0",
+]
+
+# Materials science packages (heavy dependencies)
+materials = [
+    "pymatgen>=2023.0.0",
+    "ase>=3.22.0",
+]
+
+# Graph neural networks (if needed for generation)
+gnn = [
+    "torch-geometric>=2.3.0",
+]
+
+# LLM/RAG for synthesis routes (optional stretch goal)
+llm = [
+    "langchain>=0.1.0",
+    "openai>=1.0.0",
+    "chromadb>=0.4.0",
+    "sentence-transformers>=2.2.0",
+    "pypdf>=3.17.0",
+]
+
+# Development tools
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.7.0",
+    "ruff>=0.0.285",
+    "ipython>=8.14.0",
+    "jupyter>=1.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = ["E", "F", "W", "I", "N", "UP", "B", "A", "C4"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"

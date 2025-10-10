@@ -54,8 +54,8 @@ def plot_dual_objectives(output_dir: Path = None):
     # Create figure
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 7))
 
-    # Color scheme
-    colors = ['#FF6B6B', '#95E1D3', '#4ECDC4', '#FFD93D']
+    # Color scheme - vibrant colors matching Figure 1 theme
+    colors = ['#FF4444', '#FFA500', '#06A77D', '#9B59B6']  # Red, Orange, Green, Purple
 
     # ============================================================
     # LEFT PANEL: Discovery Performance
@@ -63,7 +63,7 @@ def plot_dual_objectives(output_dir: Path = None):
 
     x_pos = np.arange(len(methods))
     bars1 = ax1.bar(x_pos, discovery_best, yerr=discovery_err,
-                    color=colors, alpha=0.8, capsize=10,
+                    color=colors, alpha=0.9, capsize=10, edgecolor='black', linewidth=1.5,
                     error_kw={'linewidth': 2, 'ecolor': 'black'})
 
     ax1.set_ylabel('Best MOF Performance (mol/kg CO₂)', fontsize=13, fontweight='bold')
@@ -81,12 +81,15 @@ def plot_dual_objectives(output_dir: Path = None):
                 ha='center', va='bottom', fontsize=10, fontweight='bold')
 
     # Add efficiency annotation for AL (Exploitation)
-    ax1.annotate('', xy=(3, discovery_best[3] - 0.5), xytext=(2, discovery_best[2] - 0.5),
-                arrowprops=dict(arrowstyle='<->', lw=2, color='green'))
-    ax1.text(2.5, discovery_best[2] - 0.9,
+    # Position arrow between the two bars, use navy to contrast with green bar
+    arrow_y = discovery_best[2] - 1.8
+    ax1.annotate('', xy=(3, arrow_y), xytext=(2, arrow_y),
+                arrowprops=dict(arrowstyle='<->', lw=2.5, color='navy'))
+    # Position text well below arrow to avoid overlap
+    ax1.text(2.5, arrow_y - 0.9,
             '62% fewer\nsamples!',
-            ha='center', fontsize=10, color='green', fontweight='bold',
-            bbox=dict(boxstyle='round,pad=0.5', facecolor='lightgreen', alpha=0.7))
+            ha='center', fontsize=11, color='white', fontweight='bold',
+            bbox=dict(boxstyle='round,pad=0.6', facecolor='navy', alpha=0.95, edgecolor='white', linewidth=2))
 
     # ============================================================
     # RIGHT PANEL: Learning Performance
@@ -99,14 +102,16 @@ def plot_dual_objectives(output_dir: Path = None):
     learning_labels = [methods[i] for i in learning_positions]
 
     bars2 = ax2.bar(range(len(learning_values)), learning_values,
-                    color=learning_colors, alpha=0.8)
+                    color=learning_colors, alpha=0.9, edgecolor='black', linewidth=1.5)
 
-    # Color bars based on good/bad performance
+    # Color bars based on good/bad performance (keep vibrant colors)
     for i, (bar, val) in enumerate(zip(bars2, learning_values)):
         if val < 0:
-            bar.set_color('#FF6B6B')  # Red for negative
+            bar.set_color('#FF4444')  # Vibrant red for negative
         elif val > 20:
             bar.set_color('#06A77D')  # Green for high reduction
+        elif val > 5:
+            bar.set_color('#9B59B6')  # Purple for moderate
 
     ax2.set_ylabel('Uncertainty Reduction (%)', fontsize=13, fontweight='bold')
     ax2.set_xlabel('Method', fontsize=13, fontweight='bold')
@@ -120,23 +125,28 @@ def plot_dual_objectives(output_dir: Path = None):
 
     # Annotate values
     for i, val in enumerate(learning_values):
-        y_offset = 1.5 if val > 0 else -2.5
+        y_offset = 1.5 if val > 0 else -4.0  # Increased offset for negative values to avoid axis overlap
         ax2.text(i, val + y_offset, f'{val:+.1f}%',
                 ha='center', va='bottom' if val > 0 else 'top',
                 fontsize=11, fontweight='bold')
 
-    # Add "Model worse!" annotation for Random
+    # Add "Model gets WORSE!" annotation for Random
+    # Position in lower left corner to avoid overlap with bar and value
     if learning_values[0] < 0:
-        ax2.text(0, learning_values[0] - 5, 'Model gets\nWORSE!',
-                ha='center', fontsize=10, color='darkred', fontweight='bold',
-                bbox=dict(boxstyle='round,pad=0.5', facecolor='#FFE5E5', alpha=0.9))
+        ax2.text(0.05, 0.08, 'Random makes\nmodel WORSE!',
+                transform=ax2.transAxes,
+                ha='left', va='bottom',
+                fontsize=11, color='white', fontweight='bold',
+                bbox=dict(boxstyle='round,pad=0.6', facecolor='#FF4444',
+                         alpha=0.95, edgecolor='white', linewidth=2))
 
-    # Add Expert note
-    ax2.text(0.98, 0.02,
-            'Note: Expert baseline excluded\n(single heuristic-based selection,\nno iterative model improvement)',
+    # Add Expert note - position in upper right to avoid overlap
+    ax2.text(0.97, 0.95,
+            'Expert baseline excluded:\nSingle heuristic selection,\nno iterative improvement',
             transform=ax2.transAxes,
-            fontsize=9, ha='right', va='bottom',
-            bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.7),
+            fontsize=9, ha='right', va='top',
+            bbox=dict(boxstyle='round,pad=0.5', facecolor='#FFF8DC',
+                     alpha=0.9, edgecolor='gray', linewidth=1),
             style='italic')
 
     # Overall title

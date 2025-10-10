@@ -47,10 +47,10 @@ def plot_ml_ablation(output_dir: Path = None):
     width = 0.25
 
     bars1 = ax1.bar(x - width, unc_reduction, width, label='Uncertainty ↓ (%)',
-                    color=['#06A77D', '#9B59B6', '#FF6B6B'], alpha=0.9)
+                    color=['#06A77D', '#9B59B6', '#FF6B6B'], alpha=0.9, zorder=2)
     ax1_twin = ax1.twinx()
     bars2 = ax1_twin.bar(x + width, n_samples, width, label='Samples',
-                         color=['#7DD4C0', '#D7BDE2', '#FFA5A5'], alpha=0.7)
+                         color=['#7DD4C0', '#D7BDE2', '#FFA5A5'], alpha=0.7, zorder=1)
 
     ax1.set_ylabel('Uncertainty Reduction (%)', fontsize=12, fontweight='bold', color='#06A77D')
     ax1_twin.set_ylabel('Sample Count', fontsize=12, fontweight='bold', color='#FFD93D')
@@ -71,10 +71,14 @@ def plot_ml_ablation(output_dir: Path = None):
         ax1.text(i, max(unc_reduction) + 3, f'${cost:.0f}',
                 ha='center', fontsize=10, fontweight='bold')
 
-    # Legend - place at lower left to avoid data
+    # Legend - place in center at 2/3 height using bbox_to_anchor to avoid all bars
     lines1, labels1 = ax1.get_legend_handles_labels()
     lines2, labels2 = ax1_twin.get_legend_handles_labels()
-    ax1.legend(lines1 + lines2, labels1 + labels2, loc='lower left', fontsize=10, framealpha=0.95)
+    legend = ax1.legend(lines1 + lines2, labels1 + labels2,
+                       loc='center', bbox_to_anchor=(0.60, 0.65),
+                       ncol=2, fontsize=10, framealpha=1.0,
+                       edgecolor='black', fancybox=True)
+    legend.set_zorder(100)  # Ensure legend appears on top of all plot elements
 
     # ============================================================
     # TOP RIGHT: Learning Curves

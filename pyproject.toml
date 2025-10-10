@@ -8,7 +8,7 @@ authors = [
 requires-python = ">=3.10"
 dependencies = [
     # Core data science (minimal for cost estimator)
-    "numpy>=1.24.0",
+    "numpy>=1.24.0,<2.0.0",
     "pandas>=2.0.0",
     "scikit-learn>=1.3.0",
     "scipy>=1.11.0",
@@ -20,9 +20,8 @@ dependencies = [
 [project.optional-dependencies]
 # ML/DL packages (needed for Economic AL)
 ml = [
-    "torch>=2.0.0",
-    "torchvision>=0.15.0",
-    "torchaudio>=2.0.0",
+    "torch>=2.0.0,<2.2.0",
+    "setuptools>=65.0.0",  # For pkg_resources
 ]
 
 # Visualization packages (needed for dashboard)

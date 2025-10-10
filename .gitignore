@@ -34,6 +34,9 @@ ENV/
 data/raw/
 data/processed/*.cif
 data/processed/*.csv
+data/CRAFTED-*/
+data/core_mof_*/
+*.tar.xz
 *.pkl
 *.h5
 *.hdf5

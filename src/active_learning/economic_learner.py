@@ -7,7 +7,9 @@ Selects samples that maximize learning per dollar spent.
 
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.gaussian_process import GaussianProcessRegressor
+from sklearn.gaussian_process.kernels import RBF, WhiteKernel, ConstantKernel, Matern
+from sklearn.preprocessing import StandardScaler
 from typing import List, Dict, Tuple, Optional
 from pathlib import Path
 
@@ -21,7 +23,7 @@ class EconomicActiveLearner:
     """
 
     def __init__(self, X_train, y_train, X_pool, y_pool,
-                 cost_estimator=None, pool_compositions=None):
+                 cost_estimator=None, pool_compositions=None, pool_sources=None):
         """
         Initialize Economic Active Learner
 
@@ -32,6 +34,7 @@ class EconomicActiveLearner:
             y_pool: Pool labels (for oracle simulation)
             cost_estimator: MOFCostEstimator instance (optional)
             pool_compositions: List of dicts with MOF compositions for cost estimation
+            pool_sources: List of source tags ('real' or 'generated') for exploration bonus
         """
         self.X_train = X_train.copy()
         self.y_train = y_train.copy()
@@ -40,55 +43,91 @@ class EconomicActiveLearner:
 
         self.cost_estimator = cost_estimator
         self.pool_compositions = pool_compositions
+        self.pool_sources = pool_sources  # Track MOF sources for exploration bonus
 
         # Metrics tracking
         self.history = []
         self.cumulative_cost = 0
         self.models = []
+        self.scaler = None  # Feature scaler for GP
+        self.current_iteration = 0  # Track iteration for exploration bonus decay
 
     def train_ensemble(self, n_models: int = 5) -> None:
         """
-        Train ensemble of models for uncertainty quantification
+        Train ensemble of Gaussian Process models for uncertainty quantification
 
         Args:
             n_models: Number of models in ensemble (default 5)
         """
         self.models = []
+
+        # Fit scaler on training data
+        self.scaler = StandardScaler()
+        X_scaled = self.scaler.fit_transform(self.X_train)
+
         for i in range(n_models):
-            model = RandomForestRegressor(
-                n_estimators=100,
-                random_state=i,
-                max_depth=10,
-                min_samples_split=5,
-                n_jobs=-1
+            # Matern kernel for smooth but flexible regression
+            kernel = (
+                ConstantKernel(1.0, (1e-3, 1e3)) *
+                Matern(length_scale=1.0, length_scale_bounds=(0.1, 10.0), nu=2.5) +
+                WhiteKernel(noise_level=0.1, noise_level_bounds=(1e-5, 1e1))
             )
-            model.fit(self.X_train, self.y_train)
+
+            model = GaussianProcessRegressor(
+                kernel=kernel,
+                alpha=0.0,
+                n_restarts_optimizer=3,
+                random_state=42 + i
+            )
+            model.fit(X_scaled, self.y_train)
             self.models.append(model)
 
     def predict_with_uncertainty(self, X) -> Tuple[np.ndarray, np.ndarray]:
         """
-        Ensemble prediction with epistemic uncertainty
+        Gaussian Process prediction with epistemic uncertainty
+
+        For GP, we use the built-in uncertainty from the covariance matrix,
+        which represents epistemic uncertainty better than ensemble disagreement.
 
         Args:
             X: Features to predict on
 
         Returns:
-            mean: Mean predictions across ensemble
-            std: Standard deviation (uncertainty)
+            mean: Mean predictions (averaged across ensemble)
+            std: Epistemic uncertainty (from GP covariance)
         """
         if not self.models:
             raise ValueError("Must train ensemble first. Call train_ensemble()")
 
-        predictions = np.array([m.predict(X) for m in self.models])
-        mean = predictions.mean(axis=0)
-        std = predictions.std(axis=0)
+        if self.scaler is None:
+            raise ValueError("Scaler not fitted. Must train ensemble first.")
+
+        # Scale features using fitted scaler
+        X_scaled = self.scaler.transform(X)
+
+        # For GP, use native uncertainty (std from covariance)
+        # Average predictions and uncertainties across ensemble
+        means = []
+        stds = []
+
+        for model in self.models:
+            pred_mean, pred_std = model.predict(X_scaled, return_std=True)
+            means.append(pred_mean)
+            stds.append(pred_std)
+
+        # Average predictions and uncertainties
+        mean = np.mean(means, axis=0)
+        std = np.mean(stds, axis=0)  # Average GP uncertainties
+
         return mean, std
 
     def economic_selection(self,
                           budget_per_iteration: float = 1000,
                           strategy: str = 'cost_aware_uncertainty',
                           min_samples: int = 20,
-                          max_samples: int = 100) -> Tuple[List[int], float]:
+                          max_samples: int = 100,
+                          exploration_bonus_initial: float = 2.0,
+                          exploration_bonus_decay: float = 0.9) -> Tuple[List[int], float]:
         """
         Select samples for validation within budget
 
@@ -100,8 +139,11 @@ class EconomicActiveLearner:
                 - 'cost_aware_uncertainty': Balance uncertainty and cost
                 - 'greedy_cheap': Cheapest high-uncertainty samples
                 - 'expected_value': (predicted value × uncertainty) / cost
+                - 'exploration_bonus': Cost-aware uncertainty WITH bonus for generated MOFs
             min_samples: Minimum samples to select
             max_samples: Maximum samples to select
+            exploration_bonus_initial: Initial exploration bonus for generated MOFs
+            exploration_bonus_decay: Decay rate for exploration bonus per iteration
 
         Returns:
             selected_indices: List of indices to query
@@ -127,6 +169,22 @@ class EconomicActiveLearner:
             # High predicted value × high uncertainty / cost
             # For CO2 uptake, high value is desirable
             acquisition = pool_mean * pool_std / (pool_costs + 1e-6)
+
+        elif strategy == 'exploration_bonus':
+            # Cost-aware uncertainty WITH exploration bonus for generated MOFs
+            # This is the RECOMMENDED strategy from lynchpin analysis
+            base_acquisition = pool_std / (pool_costs + 1e-6)
+
+            # Add exploration bonus for generated MOFs (decays over time)
+            exploration_bonus = exploration_bonus_initial * (exploration_bonus_decay ** self.current_iteration)
+
+            if self.pool_sources is not None:
+                # Apply bonus to generated MOFs
+                for i, source in enumerate(self.pool_sources):
+                    if source == 'generated':
+                        base_acquisition[i] += exploration_bonus
+
+            acquisition = base_acquisition
 
         else:
             raise ValueError(f"Unknown strategy: {strategy}")
@@ -213,7 +271,7 @@ class EconomicActiveLearner:
         Args:
             X_new: New features
             y_new: New labels
-            position_indices: Position indices in pool (for removing compositions)
+            position_indices: Position indices in pool (for removing compositions and sources)
         """
         self.X_train = pd.concat([self.X_train, X_new], ignore_index=True)
         self.y_train = pd.concat([self.y_train, y_new], ignore_index=True)
@@ -232,15 +290,26 @@ class EconomicActiveLearner:
                 if 0 <= idx < len(self.pool_compositions):
                     self.pool_compositions.pop(idx)
 
+        # Update pool sources if available (uses position indices)
+        if self.pool_sources and position_indices is not None:
+            # Remove sources at position indices (sorted descending to avoid index shifting)
+            for idx in sorted(position_indices, reverse=True):
+                if 0 <= idx < len(self.pool_sources):
+                    self.pool_sources.pop(idx)
+
     def run_iteration(self,
                      budget: float = 1000,
-                     strategy: str = 'cost_aware_uncertainty') -> Dict:
+                     strategy: str = 'cost_aware_uncertainty',
+                     exploration_bonus_initial: float = 2.0,
+                     exploration_bonus_decay: float = 0.9) -> Dict:
         """
         Run one iteration of economic active learning
 
         Args:
             budget: Available budget for this iteration
             strategy: Selection strategy
+            exploration_bonus_initial: Initial exploration bonus for generated MOFs
+            exploration_bonus_decay: Decay rate for exploration bonus per iteration
 
         Returns:
             metrics: Dict with iteration metrics
@@ -251,7 +320,9 @@ class EconomicActiveLearner:
         # Select samples within budget
         selected_indices, iteration_cost = self.economic_selection(
             budget_per_iteration=budget,
-            strategy=strategy
+            strategy=strategy,
+            exploration_bonus_initial=exploration_bonus_initial,
+            exploration_bonus_decay=exploration_bonus_decay
         )
 
         # Compute metrics before update
@@ -295,6 +366,10 @@ class EconomicActiveLearner:
         }
 
         self.history.append(metrics)
+
+        # Increment iteration counter for exploration bonus decay
+        self.current_iteration += 1
+
         return metrics
 
     def get_history_df(self) -> pd.DataFrame:

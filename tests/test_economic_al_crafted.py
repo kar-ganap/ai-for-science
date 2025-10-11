@@ -166,14 +166,14 @@ def test_economic_al_crafted_integration():
     print(f"  ✓ Saved {len(pool_uncertainty_df)} pool MOF uncertainties to {pool_uncertainty_file.name}")
 
     # ========================================================================
-    # Step 5: Run Economic Active Learning (3 iterations)
+    # Step 5: Run Economic Active Learning (5 iterations)
     # ========================================================================
 
     print("\n[5/6] Running Economic Active Learning...")
     print("-" * 80)
 
     budget_per_iteration = 50  # $50 budget per iteration
-    n_iterations = 3
+    n_iterations = 5
 
     for i in range(n_iterations):
         metrics = learner.run_iteration(

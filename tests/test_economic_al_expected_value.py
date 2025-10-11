@@ -93,11 +93,11 @@ def test_economic_al_expected_value():
     pool_uncertainty_df.to_csv(pool_uncertainty_file, index=False)
     print(f"  ✓ Saved {len(pool_uncertainty_df)} pool MOF uncertainties")
 
-    # Run 3 iterations
+    # Run 5 iterations
     print("\n[5/6] Running Economic Active Learning (Expected Value)...")
     print("-"*80)
 
-    n_iterations = 3
+    n_iterations = 5
     budget_per_iteration = 50.0
     history = []
 

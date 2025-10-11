@@ -479,7 +479,7 @@ if __name__ == '__main__':
 
     # Load CRAFTED MOF data
     project_root = Path(__file__).parents[2]
-    mof_file = project_root / "data" / "processed" / "crafted_mofs_co2.csv"
+    mof_file = project_root / "data" / "processed" / "crafted_mofs_co2_with_costs.csv"
 
     if not mof_file.exists():
         print(f"❌ MOF data not found: {mof_file}")
@@ -489,8 +489,8 @@ if __name__ == '__main__':
     print(f"✓ Loaded {len(mof_data)} MOFs with CO2 uptake data\n")
 
     # Check CO2 range
-    print(f"CO2 uptake range: {mof_data['co2_uptake_mean'].min():.2f} - {mof_data['co2_uptake_mean'].max():.2f} mmol/g")
-    print(f"CO2 uptake mean: {mof_data['co2_uptake_mean'].mean():.2f} mmol/g\n")
+    print(f"CO2 uptake range: {mof_data['co2_uptake_mean'].min():.2f} - {mof_data['co2_uptake_mean'].max():.2f} mol/kg")
+    print(f"CO2 uptake mean: {mof_data['co2_uptake_mean'].mean():.2f} mol/kg\n")
 
     # Initialize generator
     generator = ConditionalMOFGenerator()

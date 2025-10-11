@@ -53,6 +53,7 @@ results/
 figures/*.png
 figures/*.pdf
 logs/
+*.log
 
 # IDE
 .vscode/

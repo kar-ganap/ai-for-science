@@ -32,7 +32,7 @@ METHOD_COLORS = {
 
 # Page config
 st.set_page_config(
-    page_title="Active Generative Discovery for MOFs",
+    page_title="Cost-Effective AGD for MOFs",
     page_icon="🧪",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -71,8 +71,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Title
-st.markdown('<div class="main-header">🧪 Active Generative Discovery of cost-effective MOFs for CO₂ capture</div>', unsafe_allow_html=True)
-st.markdown('<p style="font-size: 1.3rem; text-align: center; margin-bottom: 1rem;"><strong>Budget-Constrained Active Learning + VAE-Guided Materials Discovery</strong></p>', unsafe_allow_html=True)
+st.markdown('<div class="main-header">🧪 Cost-Effective Active Generative Discovery of MOFs for CO₂ Capture</div>', unsafe_allow_html=True)
+st.markdown('<p style="font-size: 1.3rem; text-align: center; margin-bottom: 1rem;"><strong>Minimizing Discovery Costs While Maximizing Learning & Performance</strong></p>', unsafe_allow_html=True)
 st.markdown("---")
 
 # Sidebar
@@ -93,9 +93,8 @@ if mode == "Regenerate Data":
         "What to regenerate?",
         ["Figure 1 Data (Economic AL)",
          "Figure 2 Data (AGD)",
-         "Both Figures",
-         "Just Update Figures (no new runs)"],
-        help="Choose what data to regenerate. Estimated runtimes: Fig1 ~2-3min, Fig2 ~10-15min"
+         "Both Figures"],
+        help="Regenerate experiments with new data. Estimated runtimes: Fig1 ~27s, Fig2 ~9s, Both ~36s"
     )
 
     st.sidebar.markdown("---")
@@ -128,7 +127,7 @@ if mode == "Regenerate Data":
             help="Select which acquisition strategies to test"
         )
 
-        st.sidebar.info(f"⏱️ Estimated time: ~{fig1_iterations * len(fig1_strategies) * 0.5:.1f} min")
+        st.sidebar.info(f"⏱️ Estimated time: ~{fig1_iterations * len(fig1_strategies) * 5:.0f} seconds")
 
     # Figure 2 specific controls
     if regenerate_choice in ["Figure 2 Data (AGD)", "Both Figures"]:
@@ -169,7 +168,7 @@ if mode == "Regenerate Data":
             help="Maximum percentage of generated MOFs in portfolio"
         )
 
-        st.sidebar.info(f"⏱️ Estimated time: ~{fig2_iterations * 5:.1f} min")
+        st.sidebar.info(f"⏱️ Estimated time: ~{fig2_iterations * 3:.0f} seconds")
 
     st.sidebar.markdown("---")
 
@@ -219,24 +218,7 @@ if st.session_state.get('run_regeneration', False):
         from src.cost.estimator import MOFCostEstimator
         import subprocess
 
-        if regenerate_choice == "Just Update Figures (no new runs)":
-            # Just regenerate figures from existing data
-            with status_container:
-                st.info("📊 Regenerating figures from existing data...")
-
-            progress_bar.progress(25, text="Generating Figure 1...")
-            subprocess.run([sys.executable, "src/visualization/figure1_ml_ablation.py"],
-                          cwd=project_root, check=True, capture_output=True)
-
-            progress_bar.progress(75, text="Generating Figure 2...")
-            subprocess.run([sys.executable, "src/visualization/figure2_active_generative_discovery.py"],
-                          cwd=project_root, check=True, capture_output=True)
-
-            progress_bar.progress(100, text="✅ Figures regenerated!")
-            with status_container:
-                st.success("✅ Figures successfully regenerated from existing data!")
-
-        elif regenerate_choice in ["Figure 1 Data (Economic AL)", "Both Figures"]:
+        if regenerate_choice in ["Figure 1 Data (Economic AL)", "Both Figures"]:
             # Run Figure 1 data generation
             fig1_params = st.session_state.get('fig1_params', {})
 
@@ -1189,7 +1171,7 @@ with tab5:
 st.markdown("---")
 st.markdown("""
 <div style='text-align: center; color: gray;'>
-    <p>Active Generative Discovery of cost-effective MOFs for CO₂ capture | 2025</p>
-    <p>Built with Streamlit • Data from CRAFTED Database • VAE-Guided Materials Discovery</p>
+    <p>Cost-Effective Active Generative Discovery of MOFs for CO₂ Capture | 2025</p>
+    <p>Built with Streamlit • Data from CRAFTED Database • Budget-Constrained ML Discovery</p>
 </div>
 """, unsafe_allow_html=True)

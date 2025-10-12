@@ -1,10 +1,12 @@
-# Active Generative Discovery for MOF Discovery
+# Cost-Effective Active Generative Discovery of MOFs
 ## 1-Page Executive Brief
 
 ---
 
 ## The Problem
-MOF discovery for CO₂ capture is expensive ($0.10-$3.00/sample). Traditional approaches either exhaustively search the space (prohibitively expensive) or rely on expert heuristics (limited coverage, no systematic learning).
+MOF discovery requires expensive experimental validation ($35-65 per MOF for characterization/testing). Traditional approaches either exhaustively search the space (prohibitively expensive) or rely on expert heuristics (limited coverage, no systematic learning).
+
+**Focus**: Minimizing the cost of the *discovery process* (validation budget) while maximizing learning and performance.
 
 ---
 
@@ -14,7 +16,7 @@ MOF discovery for CO₂ capture is expensive ($0.10-$3.00/sample). Traditional a
 ### Scientific Approach
 - **Gaussian Process Ensemble**: Bayesian epistemic uncertainty from covariance matrix (not ensemble variance)
 - **Conditional VAE**: Goal-directed generation with adaptive targeting (7.1 → 10.2 mol/kg)
-- **Dual-Cost Optimization**: Validation ($0.01-$0.10) + synthesis ($0.10-$3.00/g) with greedy knapsack
+- **Dual-Cost Optimization**: Validation ($35-65 per MOF, estimated) + synthesis ($0.10-$3.00/g, from reagent database) with greedy knapsack
 - **Portfolio Constraints**: 70-85% generated MOFs + 15-30% real MOFs (risk management)
 
 **Validation**: CRAFTED dataset (687 experimental MOFs), 4-way baseline comparison, 100% budget compliance

@@ -1,13 +1,15 @@
-# Economic Active Learning for MOF Discovery
+# Cost-Effective Active Generative Discovery of MOFs
 
-**Active Generative Discovery: Portfolio-Constrained VAE-Guided Materials Discovery**
+**Economic Active Learning with Portfolio-Constrained VAE-Guided Materials Discovery**
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Overview
 
-This project demonstrates a novel approach to materials discovery that combines **economic active learning** with **conditional generative modeling** to accelerate the discovery of high-performance CO₂-capturing Metal-Organic Frameworks (MOFs).
+This project demonstrates a novel approach to **cost-effective materials discovery** that combines **economic active learning** with **conditional generative modeling**. By intelligently selecting which MOFs to characterize/validate under budget constraints, we maximize scientific learning and discovery efficiency for high-performance CO₂-capturing Metal-Organic Frameworks (MOFs).
+
+**Key Focus**: Minimizing the cost of the *discovery process* (experimental validation budget) while maximizing learning and discovery outcomes, not necessarily finding cheaper MOFs to synthesize.
 
 ### Key Innovation
 
@@ -228,13 +230,20 @@ uv run python src/visualization/figure2_active_generative_discovery.py
 
 ### Cost Model
 
-**Validation Cost**: $0.01 - $0.10/sample (characterization)
-**Synthesis Cost**: Metal-dependent base cost × volume scaling × complexity factor
-- Precious metals (Au, Pt, Pd): High cost
-- Transition metals (Cu, Zn, Fe): Low cost
-- Volume scaling: log(volume) factor
+**Validation Cost**: $35-65 per MOF (characterization/experimental testing)
+- Equipment time (BET, XRD, TGA, gas adsorption)
+- Metal-dependent (Zn: $35, Zr: $65)
+- *Note: These are estimated costs for demonstration purposes*
 
-**Average Cost**: $0.78/MOF (exploration) vs $2.03/MOF (exploitation)
+**Synthesis Cost**: $0.10-$3.00 per gram (from reagent database)
+- Based on real 2024 chemical supplier prices (Sigma-Aldrich, Fisher, etc.)
+- Metal salts: $0.08-$1.35/g (Mg nitrate cheap, Zr chloride expensive)
+- Organic linkers: $0.033-$8.00/g (terephthalic acid cheap, functionalized expensive)
+- Solvents: $0.05/mL (DMF typical)
+
+**Total Cost per MOF**: Validation ($35-65) + Synthesis ($0.78 average) ≈ **$36-66 per MOF**
+
+**Dual-Cost Insight**: Validation dominates (~95% of cost), so economic AL focuses on minimizing validation budget while maximizing information gain.
 
 ### Experimental Design
 
@@ -264,9 +273,9 @@ If you use this code in your research, please cite:
 ```bibtex
 @software{ganapathi2025economic_al_mof,
   author = {Ganapathi, Kartik},
-  title = {Economic Active Learning for MOF Discovery},
+  title = {Cost-Effective Active Generative Discovery of MOFs},
   year = {2025},
-  url = {https://github.com/yourusername/ai-for-science}
+  url = {https://github.com/kar-ganap/ai-for-science}
 }
 ```
 
@@ -288,7 +297,7 @@ MIT License
 
 ## Contact
 
-Kartik Ganapathi - [Your Email/GitHub]
+Kartik Ganapathi
 
 ## Acknowledgments
 

@@ -1,4 +1,4 @@
-# Active Generative Discovery of Cost-Effective MOFs for CO₂ Capture
+# Cost-Effective Active Generative Discovery of MOFs for CO₂ Capture
 
 **Hackathon Brief**: Addressing budget-constrained materials discovery through tight integration of Active Learning and generative models.
 
@@ -7,7 +7,7 @@
 ## Scientific Relevance & Rigor
 
 ### Concrete Problem
-Metal-Organic Frameworks (MOFs) are promising materials for CO₂ capture, but experimental discovery is expensive ($0.10-$3.00 per sample). Traditional approaches either exhaustively search the space (prohibitively expensive) or rely on expert heuristics (limited coverage). **Challenge**: Maximize discovery performance while minimizing experimental cost.
+Metal-Organic Frameworks (MOFs) are promising materials for CO₂ capture, but experimental discovery requires expensive validation ($35-65 per MOF for characterization). Traditional approaches either exhaustively search the space (prohibitively expensive) or rely on expert heuristics (limited coverage). **Challenge**: Minimize the cost of the *discovery process* (validation budget) while maximizing learning and discovery performance.
 
 ### Scientific Soundness
 

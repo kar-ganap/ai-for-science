@@ -18,7 +18,7 @@ graph TB
     subgraph "Core System"
         AL["Economic Active Learning<br/>(Budget-Constrained ML)"]
         VAE["Conditional VAE<br/>(Generative Model)"]
-        GP["GP Ensemble<br/>(Surrogate Model)"]
+        GP["Gaussian Process Ensemble<br/>(Surrogate Model)"]
     end
 
     subgraph "Output Layer"
